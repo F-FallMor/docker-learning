@@ -1,0 +1,20 @@
+
+services:   #defines services
+ web:                 #service name choosen by us
+      build: .        #builds image following the dockerfile in the current dir
+      ports: 
+      - "5002:5002"   #what ports to expose (machine port:container's port)
+      depends_on:     #ensures redis starts before the web service
+       - redis
+      environment:    #env variables picked up by count.py to connect to redis
+       -REDIS_HOST=redis            
+       -REDIS_PORT=6379
+
+ redis:                     #second service name
+    image: "redis:latest"   #pulls official image from dockerhub
+    ports:                  #what ports to expose (machine port:container's port)
+    - "6379:6379"
+    volumes:                
+    - redis-data:/data      #uses one of the volumes to keep alive the service data even when it's shut down 
+volumes:
+    redis-data:             #volumes is where all the volumes are listed
